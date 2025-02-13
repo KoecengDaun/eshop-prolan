@@ -35,22 +35,25 @@ public class ProductController {
         model.addAttribute("products", allProducts);
         return "productList";
     }
-
     @GetMapping("/edit/{id}")
     public String editProductPage(@PathVariable("id") String id, Model model) {
         Product product = service.findById(id);
         if (product == null) {
-            return "redirect:list"; // Jika produk tidak ditemukan, redirect ke halaman list
+            return "redirect:list";
         }
         model.addAttribute("product", product);
-        return "editProduct"; // Pastikan ada template editProduct.html
+        return "editProduct";
     }
 
-    // Endpoint untuk memproses update produk
     @PostMapping("/edit")
     public String editProductPost(@ModelAttribute Product product) {
         service.update(product.getProductId(), product.getProductName(), product.getProductQuantity());
         return "redirect:list";
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") String id) {
+        service.delete(id);
+        return "redirect:/product/list";
+    }
 }

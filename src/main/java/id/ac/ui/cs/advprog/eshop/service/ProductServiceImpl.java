@@ -52,4 +52,12 @@ public class ProductServiceImpl implements ProductService {
             product.setProductQuantity(quantity);
         }
     }
+
+    @Override
+    public void delete(String id) {
+        Product product = findById(id);
+        if (product != null) {
+            productRepository.delete(product);
+        }
+    }
 }
