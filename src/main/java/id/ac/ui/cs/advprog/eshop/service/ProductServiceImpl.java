@@ -5,16 +5,21 @@ import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private final ProductRepository productRepository;
+
+    // Constructor injection
     @Autowired
-    private ProductRepository productRepository;
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public Product create(Product product) {
@@ -34,14 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(String id) {
-        Iterator<Product> productIterator = productRepository.findAll();
-        while (productIterator.hasNext()) {
-            Product product = productIterator.next();
-            if (product.getProductId().equals(id)) {
-                return product;
-            }
-        }
-        return null;
+        return productRepository.findById(id);
     }
 
     @Override
@@ -50,14 +48,12 @@ public class ProductServiceImpl implements ProductService {
         if (product != null) {
             product.setProductName(name);
             product.setProductQuantity(quantity);
+            productRepository.update(product);
         }
     }
 
     @Override
     public void delete(String id) {
-        Product product = findById(id);
-        if (product != null) {
-            productRepository.delete(product);
-        }
+        productRepository.delete(id);
     }
 }
