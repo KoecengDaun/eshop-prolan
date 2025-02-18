@@ -1,0 +1,47 @@
+name: Deploy to Koyeb
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build Application
+        run: ./gradlew clean bootJar
+
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/advshop:latest .
+
+      - name: Docker Login
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/advshop:latest
+
+      - name: Deploy to Koyeb
+        run: |
+          curl -X PATCH "https://app.koyeb.com/v1/services/${{ secrets.KOYEB_SERVICE_ID }}" \
+          -H "Authorization: Bearer ${{ secrets.KOYEB_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+                "definition": {
+                  "name": "advshop",
+                  "routes": [{ "port": 8080 }],
+                  "image": "'${{ secrets.DOCKERHUB_USERNAME }}'/advshop:latest"
+                }
+              }'
