@@ -25,3 +25,14 @@ Setelah menyelesaikan penulisan unit test, saya merasa lega dan puas karena test
 ## Refleksi Functional Testing
 
 Setelah menyelesaikan `CreateProductFunctionalTest.java` yang mensimulasikan interaksi pengguna untuk menambahkan produk, saya diminta membuat functional test suite baru yang memverifikasi jumlah item dalam daftar produk. Dalam proses tersebut, saya menyadari bahwa ada banyak bagian setup dan variabel instance yang sama dengan functional test sebelumnya. Duplikasi kode seperti ini, jika tidak diatasi, bisa menurunkan kualitas kode dan menyulitkan pemeliharaan di masa depan. Untuk meningkatkan kebersihan kode, saya menyarankan agar bagian-bagian setup yang sama diekstraksi ke dalam kelas dasar (base class) atau utilitas bersama. Dengan begitu, setiap functional test suite dapat mewarisi atau menggunakan fungsi-fungsi umum tersebut, sehingga mengurangi duplikasi dan meningkatkan keterbacaan serta maintainability kode. Secara keseluruhan, meskipun unit test dan functional test sangat penting untuk memastikan kualitas aplikasi, menjaga agar kode test itu sendiri tetap bersih dan terstruktur adalah hal yang tidak kalah penting, sehingga kita bisa terus menambah test tanpa mengorbankan kualitas dan kemudahan perawatan kode.
+
+# Refleksi 3
+
+## Code Quality Issues and How I Fixed Them
+- **Duplicate Literal Strings:** Sonar menandai string `"redirect:list"` yang dipakai berulang kali di `ProductController`. Saya memperbaikinya dengan mendefinisikan sebuah constant `private static final String REDIRECT_LIST = "redirect:list";` dan menggunakan constant tersebut di semua tempat yang membutuhkan.
+- **Anchor Tags as Buttons:** Pada file HTML, saya mengganti anchor yang berfungsi sebagai tombol `Delete` dengan `<form>` + `<button>` agar sesuai dengan semantik HTML dan best practice aksesibilitas.
+- **Thread.sleep Usage:** Di salah satu functional test, saya mengganti `Thread.sleep()` dengan `WebDriverWait` dari Selenium agar lebih stabil dan tidak bergantung pada penundaan statis.
+- **Empty Methods:** Beberapa metode kosong seperti `contextLoads()` atau `setUp()` membutuhkan komentar penjelasan. Saya menambahkan komentar untuk memberitahukan bahwa metode tersebut memang sengaja dibiarkan kosong.
+
+## Continuous Integration and Continuous Deployment
+Saya yakin implementasi saat ini sudah memenuhi definisi Continuous Integration dan Continuous Deployment. Setiap kali ada perubahan kode (push) ke repository, pipeline secara otomatis menjalankan serangkaian tes (unit test, functional test) dan melakukan code analysis (misalnya dengan SonarCloud). Setelah itu, pipeline juga melakukan deployment otomatis ke platform PaaS yang saya pilih (misalnya Render atau Koyeb). Dengan demikian, setiap perubahan dicek secara konsisten, kualitas kode terpantau, dan versi terbaru aplikasi langsung tersedia di lingkungan produksi tanpa intervensi manual.
