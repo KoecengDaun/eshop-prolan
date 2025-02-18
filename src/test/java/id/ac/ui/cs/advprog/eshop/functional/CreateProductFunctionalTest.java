@@ -14,6 +14,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 
 import io.github.bonigarcia.seljup.SeleniumJupiter;
 
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.time.Duration;
+
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
 public class CreateProductFunctionalTest {
@@ -34,18 +38,15 @@ public class CreateProductFunctionalTest {
     @Test
     void createProduct_isSuccessful(ChromeDriver driver) throws Exception {
         String productName = "Test Product " + System.currentTimeMillis();
-
         driver.get(baseUrl + "/product/create");
-
         driver.findElement(By.id("nameInput")).sendKeys(productName);
         driver.findElement(By.id("quantityInput")).sendKeys("50");
-
         driver.findElement(By.xpath("//button[@type='submit']")).click();
 
-        Thread.sleep(2000);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(text(),'" + productName + "')]")));
 
         driver.get(baseUrl + "/product/list");
-
         String pageSource = driver.getPageSource();
         assertTrue(pageSource.contains(productName), "Produk baru seharusnya muncul di daftar produk");
     }
