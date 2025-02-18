@@ -19,6 +19,9 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        // Tidak diperlukan pengaturan tambahan di sini karena:
+        // - ProductRepository disuntikkan secara otomatis oleh Mockito melalui @InjectMocks.
+        // - Status default repositori (daftar kosong) sudah cukup untuk pengujian kami.
     }
 
     @Test

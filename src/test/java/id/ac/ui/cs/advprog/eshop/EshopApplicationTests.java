@@ -8,6 +8,8 @@ class EshopApplicationTests {
 
     @Test
     void contextLoads() {
+        // Tes ini sengaja dibiarkan kosong.
+        // Ini memverifikasi bahwa konteks aplikasi Spring berhasil dimuat.
     }
 
     @Test
