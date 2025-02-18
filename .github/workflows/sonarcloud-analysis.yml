@@ -19,6 +19,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Build project with Gradle
+        run: ./gradlew build --no-daemon
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
@@ -36,3 +39,4 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.automaticAnalysis=false
+            -Dsonar.java.binaries=build/classes/java/main
