@@ -5,28 +5,38 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import id.ac.ui.cs.advprog.eshop.controller.ProductController;
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
-import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@WebMvcTest(ProductController.class)
+import java.util.List;
+
 public class ProductControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private ProductService productService;
+    @Mock
+    private ProductService productService;  // Buat mock dependency
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+        ProductController productController = new ProductController();
+        // Suntikkan dependency ke field 'service' menggunakan ReflectionTestUtils
+        ReflectionTestUtils.setField(productController, "service", productService);
+        mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
+    }
 
     @Test
     public void testCreateProductPage() throws Exception {
@@ -51,7 +61,6 @@ public class ProductControllerTest {
     @Test
     public void testProductListPage() throws Exception {
         when(productService.findAll()).thenReturn(List.of(new Product(), new Product()));
-
         mockMvc.perform(get("/product/list"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("productList"))
@@ -65,7 +74,6 @@ public class ProductControllerTest {
         product.setProductName("Produk Edit");
         product.setProductQuantity(10);
         when(productService.findById("P002")).thenReturn(product);
-
         mockMvc.perform(get("/product/edit/P002"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editProduct"))
@@ -75,7 +83,6 @@ public class ProductControllerTest {
     @Test
     public void testEditProductPage_ProductNotFound() throws Exception {
         when(productService.findById("P003")).thenReturn(null);
-
         mockMvc.perform(get("/product/edit/P003"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("list"));
@@ -84,7 +91,6 @@ public class ProductControllerTest {
     @Test
     public void testEditProductPost() throws Exception {
         doNothing().when(productService).update(anyString(), anyString(), anyInt());
-
         mockMvc.perform(post("/product/edit")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("productId", "P004")
@@ -97,7 +103,6 @@ public class ProductControllerTest {
     @Test
     public void testDeleteProduct() throws Exception {
         doNothing().when(productService).delete("P005");
-
         mockMvc.perform(get("/product/delete/P005"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/product/list"));
