@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
-public class ProductControllerTest {
+class ProductControllerTest {
 
     private MockMvc mockMvc;
 
