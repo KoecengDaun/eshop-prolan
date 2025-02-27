@@ -32,7 +32,8 @@ class ProductControllerTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-        ProductController productController = new ProductController();
+        ProductController productController;
+        productController = new ProductController();
         // Suntikkan dependency ke field 'service' menggunakan ReflectionTestUtils
         ReflectionTestUtils.setField(productController, "service", productService);
         mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
