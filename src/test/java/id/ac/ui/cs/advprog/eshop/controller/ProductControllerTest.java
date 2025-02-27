@@ -39,7 +39,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testCreateProductPage() throws Exception {
+    void testCreateProductPage() throws Exception {
         mockMvc.perform(get("/product/create"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createProduct"))
@@ -47,7 +47,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testCreateProductPost() throws Exception {
+    void testCreateProductPost() throws Exception {
         when(productService.create(any(Product.class))).thenReturn(new Product());
         mockMvc.perform(post("/product/create")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -59,7 +59,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testProductListPage() throws Exception {
+    void testProductListPage() throws Exception {
         when(productService.findAll()).thenReturn(List.of(new Product(), new Product()));
         mockMvc.perform(get("/product/list"))
                 .andExpect(status().isOk())
@@ -68,7 +68,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testEditProductPage_ProductExists() throws Exception {
+    void testEditProductPage_ProductExists() throws Exception {
         Product product = new Product();
         product.setProductId("P002");
         product.setProductName("Produk Edit");
@@ -81,7 +81,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testEditProductPage_ProductNotFound() throws Exception {
+    void testEditProductPage_ProductNotFound() throws Exception {
         when(productService.findById("P003")).thenReturn(null);
         mockMvc.perform(get("/product/edit/P003"))
                 .andExpect(status().is3xxRedirection())
@@ -89,7 +89,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testEditProductPost() throws Exception {
+    void testEditProductPost() throws Exception {
         doNothing().when(productService).update(anyString(), anyString(), anyInt());
         mockMvc.perform(post("/product/edit")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -101,7 +101,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testDeleteProduct() throws Exception {
+    void testDeleteProduct() throws Exception {
         doNothing().when(productService).delete("P005");
         mockMvc.perform(get("/product/delete/P005"))
                 .andExpect(status().is3xxRedirection())
