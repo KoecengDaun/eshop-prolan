@@ -36,7 +36,7 @@ class CreateProductFunctionalTest {
     }
 
     @Test
-    void createProduct_isSuccessful(ChromeDriver driver) throws Exception {
+    void createProduct_isSuccessful(ChromeDriver driver) {
         String productName = "Test Product " + System.currentTimeMillis();
         driver.get(baseUrl + "/product/create");
         driver.findElement(By.id("nameInput")).sendKeys(productName);
