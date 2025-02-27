@@ -3,6 +3,8 @@ package id.ac.ui.cs.advprog.eshop;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 @SpringBootTest
 class EshopApplicationTests {
 
@@ -14,6 +16,7 @@ class EshopApplicationTests {
 
     @Test
     void mainMethodTest() {
-        EshopApplication.main(new String[] {});
+        // Pastikan metode main dapat berjalan tanpa melempar exception
+        assertDoesNotThrow(() -> EshopApplication.main(new String[] {}));
     }
 }
