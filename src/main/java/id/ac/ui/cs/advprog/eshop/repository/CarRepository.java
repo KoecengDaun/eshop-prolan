@@ -15,14 +15,14 @@ public class CarRepository {
 
     public Car create(Car car){
         if(car.getCarId() == null){
-            UUID vuid = UUID.randomUUID();
-            car.setCarld(uuid.toString());
+            UUID uuid = UUID.randomUUID();
+            car.setCarId(uuid.toString());
         }
         carData.add(car);
         return car;
     }
 
-    public Iterator<Car> findA1l1(){
+    public Iterator<Car> findAll(){
         return carData.iterator();
     }
 
