@@ -36,3 +36,34 @@ Setelah menyelesaikan `CreateProductFunctionalTest.java` yang mensimulasikan int
 
 ## Continuous Integration and Continuous Deployment
 Saya yakin implementasi saat ini sudah memenuhi definisi Continuous Integration dan Continuous Deployment. Setiap kali ada perubahan kode (push) ke repository, pipeline secara otomatis menjalankan serangkaian tes (unit test, functional test) dan melakukan code analysis (misalnya dengan SonarCloud). Setelah itu, pipeline juga melakukan deployment otomatis ke platform PaaS yang saya pilih (misalnya Render atau Koyeb). Dengan demikian, setiap perubahan dicek secara konsisten, kualitas kode terpantau, dan versi terbaru aplikasi langsung tersedia di lingkungan produksi tanpa intervensi manual.
+
+# Refleksi 4
+
+## 1) Prinsip yang diterapkan pada proyek
+Dalam proyek ini, saya menerapkan kelima prinsip SOLID, yaitu:
+1. **Single Responsibility Principle (SRP)**:  
+   Setiap kelas atau modul memiliki satu tanggung jawab spesifik. Sebagai contoh, `CarService` hanya bertugas mengelola logika bisnis mobil, sedangkan `CarRepository` hanya menangani penyimpanan data.
+2. **Open/Closed Principle (OCP)**:  
+   Kode dirancang agar mudah diperluas tanpa perlu memodifikasi kode yang sudah stabil. Contohnya, jika ingin menambahkan validasi baru saat membuat mobil, cukup menambah metode di `CarService` tanpa merombak keseluruhan struktur.
+3. **Liskov Substitution Principle (LSP)**:  
+   Sub-kelas atau implementasi harus bisa menggantikan super-kelas atau interface-nya tanpa mengubah perilaku yang diharapkan. Di sini, misalnya, `CarServiceImpl` dapat digunakan di mana pun `CarService` dibutuhkan, tanpa mengganggu program.
+4. **Interface Segregation Principle (ISP)**:  
+   Interface dibuat khusus untuk kebutuhan tertentu sehingga kelas tidak dipaksa mengimplementasikan metode yang tidak relevan. Misalnya, `CarService` berisi metode spesifik untuk mobil, `ProductService` berisi metode khusus untuk produk.
+5. **Dependency Inversion Principle (DIP)**:  
+   Modul tingkat tinggi bergantung pada abstraksi (interface), bukan pada implementasi konkret. Contohnya, `CarServiceImpl` bergantung pada `CarRepository` (interface) sehingga mudah mengganti implementasi repository tanpa mengubah kode layanan.
+
+## 2) Keuntungan menerapkan prinsip SOLID (dengan contoh)
+- **Mudah Dikembangkan (Contoh: OCP)**  
+  Ketika perlu menambahkan fitur atau metode baru, tidak perlu mengubah keseluruhan sistem. Misalnya, menambahkan logika validasi baru untuk `Car` cukup ditambahkan di `CarServiceImpl` tanpa menyentuh `CarRepository`.
+- **Mudah Dites (Contoh: DIP)**  
+  Dengan constructor injection yang bergantung pada interface, bisa mengganti `CarRepository` asli dengan versi *mock* saat melakukan unit test. Ini membuat pengujian lebih mudah dan terisolasi.
+- **Perawatan Kode Lebih Sederhana (Contoh: SRP)**  
+  Karena setiap kelas memiliki tanggung jawab tunggal, perubahan atau penelusuran bug lebih cepat dilakukan. Contohnya, jika ada kesalahan pada pengelolaan data, cukup memeriksa `CarRepository` ketimbang menelusuri kode di banyak tempat.
+
+## 3) Kerugian jika tidak menerapkan prinsip SOLID (dengan contoh)
+- **Kode Sulit Dikembangkan (Contoh: Pelanggaran OCP)**  
+  Jika satu kelas melakukan banyak hal sekaligus, menambahkan fitur baru bisa memaksa mengubah kode dasar, berpotensi menimbulkan bug di berbagai bagian lain.
+- **Kode Sulit Diuji (Contoh: Pelanggaran DIP)**  
+  Ketika sebuah kelas langsung bergantung pada implementasi konkret, harus mengatur *setup* yang kompleks untuk tes. Akibatnya, timbul kesulitan dan memakan banyak waktu saat melakukan unit test.
+- **Perawatan Mahal dan Rumit (Contoh: Pelanggaran SRP)**  
+  Kelas yang menampung tanggung jawab terlalu banyak (misalnya, logic bisnis + akses data + manipulasi UI) akan membuat perbaikan bug atau perubahan kecil berdampak luas ke keseluruhan kode, sehingga memakan waktu dan biaya.
