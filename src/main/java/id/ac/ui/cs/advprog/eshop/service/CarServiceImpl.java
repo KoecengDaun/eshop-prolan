@@ -11,12 +11,16 @@ import java.util.List;
 @Service
 public class CarServiceImpl implements CarService {
 
+    // Dependency Inversion Principle (DIP)
+    private final CarRepository carRepository;
+
     @Autowired
-    private CarRepository carRepository;
+    public CarServiceImpl(CarRepository carRepository) {
+        this.carRepository = carRepository;
+    }
 
     @Override
     public Car create(Car car) {
-        // TODO Auto-generated method stub
         carRepository.create(car);
         return car;
     }
@@ -29,21 +33,19 @@ public class CarServiceImpl implements CarService {
         return allCar;
     }
 
+    // Local variables should not be declared and then immediately returned or thrown (sonar)
     @Override
     public Car findById(String carId) {
-        Car car = carRepository.findById(carId);
-        return car;
+        return carRepository.findById(carId);
     }
 
     @Override
     public void update(String carId, Car car) {
-        // TODO Auto-generated method stub
         carRepository.update(carId, car);
     }
 
     @Override
     public void deleteCarById(String carId) {
-        // TODO Auto-generated method stub
         carRepository.delete(carId);
     }
 }

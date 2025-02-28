@@ -17,8 +17,13 @@ public class ProductController {
 
     private static final String REDIRECT_LIST = "redirect:list";
 
+    //Dependency Inversion Principle (DIP)
+    private final ProductService service;
+
     @Autowired
-    private ProductService service;
+    public ProductController(ProductService service) {
+        this.service = service;
+    }
 
     @GetMapping("/create")
     public String createProductPage(Model model) {
@@ -64,10 +69,17 @@ public class ProductController {
 
 @Controller
 @RequestMapping("/car")
-class CarController extends ProductController {
+//Single Responsibility Principle (SRP)
+class CarController {
 
-    @Autowired
-    private CarServiceImpl carservice;
+    private static final String REDIRECT_LIST_CAR = "redirect:listCar";
+
+    //Dependency Inversion Principle (DIP)
+    private final CarServiceImpl carservice;
+
+    public CarController(CarServiceImpl carservice) {
+        this.carservice = carservice;
+    }
 
     @GetMapping("/createCar")
     public String createCarPage(Model model) {
@@ -79,7 +91,7 @@ class CarController extends ProductController {
     @PostMapping("/createCar")
     public String createCarPost(@ModelAttribute Car car, Model model) {
         carservice.create(car);
-        return "redirect:listCar";
+        return REDIRECT_LIST_CAR;
     }
 
     @GetMapping("/listCar")
@@ -100,12 +112,12 @@ class CarController extends ProductController {
     public String editCarPost(@ModelAttribute Car car, Model model) {
         System.out.println(car.getCarId());
         carservice.update(car.getCarId(), car);
-        return "redirect:listCar";
+        return REDIRECT_LIST_CAR;
     }
 
     @PostMapping("/deleteCar")
     public String deleteCar(@RequestParam("carId") String carId) {
         carservice.deleteCarById(carId);
-        return "redirect:listCar";
+        return REDIRECT_LIST_CAR;
     }
 }
